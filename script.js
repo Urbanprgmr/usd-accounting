@@ -139,6 +139,22 @@ document.getElementById('takeProfitForm').addEventListener('submit', function (e
   updateUI();
 });
 
+// Clear Payment Summary
+function clearPaymentSummary() {
+  totalPaymentIn = 0;
+  totalPaymentOut = 0;
+  saveToLocalStorage();
+  updateUI();
+}
+
+// Add event listener for the Clear Payment button
+document.getElementById('clearPayment').addEventListener('click', function (e) {
+  e.preventDefault();
+  if (confirm('Are you sure you want to clear the payment summary?')) {
+    clearPaymentSummary();
+  }
+});
+
 // Save Data to LocalStorage
 function saveToLocalStorage() {
   localStorage.setItem('transactions', JSON.stringify(transactions));
