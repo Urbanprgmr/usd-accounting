@@ -16,7 +16,7 @@ let totalPaymentOut = parseFloat(localStorage.getItem('totalPaymentOut')) || 0;
 let initialCapital = parseFloat(localStorage.getItem('initialCapital')) || 0;
 let amountDeducted = parseFloat(localStorage.getItem('amountDeducted')) || 0;
 let balanceCapital = parseFloat(localStorage.getItem('balanceCapital')) || 0;
-let takeProfit = parseFloat(localStorage.getItem('takeProfit')) || 0;
+let totalTakenProfit = parseFloat(localStorage.getItem('totalTakenProfit')) || 0;
 
 // Load saved data on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -128,8 +128,12 @@ document.getElementById('takeProfitForm').addEventListener('submit', function (e
   const amount = parseFloat(document.getElementById('takeProfitAmount').value);
 
   // Deduct the take profit amount from the total profit
-  takeProfit += amount;
+  totalTakenProfit += amount;
   balanceCapital -= amount;
+
+  // Add the take profit transaction to history
+  const timestamp = new Date().toLocaleString();
+  transactions.push({ type: 'Take Profit', currency: 'MVR', amount, rate: 1, remarks: 'Profit Taken', timestamp });
 
   saveToLocalStorage();
   updateUI();
@@ -151,7 +155,7 @@ function saveToLocalStorage() {
   localStorage.setItem('initialCapital', initialCapital);
   localStorage.setItem('amountDeducted', amountDeducted);
   localStorage.setItem('balanceCapital', balanceCapital);
-  localStorage.setItem('takeProfit', takeProfit);
+  localStorage.setItem('totalTakenProfit', totalTakenProfit);
 }
 
 // Update UI
@@ -169,8 +173,6 @@ function updateUI() {
   document.getElementById('totalSoldUSDT').textContent = totalSold.USDT.toFixed(2);
   const avgSellPrice = totalSellRevenue / (totalSold.USD + totalSold.EUR + totalSold.USDT) || 0;
   document.getElementById('avgSellPrice').textContent = avgSellPrice.toFixed(2);
-  const currentProfit = totalSellRevenue - (totalSold.USD + totalSold.EUR + totalSold.USDT) * avgPurchaseCost - takeProfit;
-  document.getElementById('currentProfit').textContent = currentProfit.toFixed(2);
 
   // Update Payment Summary
   document.getElementById('totalPaymentIn').textContent = totalPaymentIn.toFixed(2);
@@ -190,6 +192,11 @@ function updateUI() {
   document.getElementById('balanceUSD').textContent = balanceUSD.toFixed(2);
   document.getElementById('balanceEUR').textContent = balanceEUR.toFixed(2);
   document.getElementById('balanceUSDT').textContent = balanceUSDT.toFixed(2);
+
+  // Update Profit Calculations
+  const currentProfit = totalSellRevenue - totalBuyCost - totalTakenProfit;
+  document.getElementById('currentProfit').textContent = currentProfit.toFixed(2);
+  document.getElementById('totalTakenProfit').textContent = totalTakenProfit.toFixed(2);
 
   // Update Transaction History
   const tbody = document.querySelector('#transactionHistory tbody');
@@ -250,6 +257,9 @@ function deleteTransaction(index) {
       totalSold[transaction.currency] -= transaction.amount;
       totalSellRevenue -= transaction.amount * transaction.rate;
       balanceCapital -= transaction.amount * transaction.rate; // Deduct from capital
+    } else if (transaction.type === 'Take Profit') {
+      totalTakenProfit -= transaction.amount;
+      balanceCapital += transaction.amount; // Add back to capital
     }
 
     // Remove the transaction from the list
