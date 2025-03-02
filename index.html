@@ -5,7 +5,141 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Transaction Manager</title>
   <style>
-    /* Add your CSS styles here */
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+
+    /* Form Styles */
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    form input,
+    form select,
+    form textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    form button {
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #218838;
+    }
+
+    /* Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    table th,
+    table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+      background-color: #f8f9fa;
+      font-weight: bold;
+    }
+
+    table tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    /* Summary Section Styles */
+    .summary-section {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .summary-section h2 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    .summary-section p {
+      margin: 5px 0;
+    }
+
+    /* Button Styles */
+    .action-button {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .edit-button {
+      background-color: #ffc107;
+      color: #000;
+    }
+
+    .edit-button:hover {
+      background-color: #e0a800;
+    }
+
+    .delete-button {
+      background-color: #dc3545;
+      color: #fff;
+    }
+
+    .delete-button:hover {
+      background-color: #c82333;
+    }
+
+    /* Export Button */
+    #exportCSV {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #exportCSV:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
@@ -13,25 +147,73 @@
 
   <!-- Buy Form -->
   <form id="buyForm">
-    <!-- Add buy form fields here -->
+    <h2>Buy Transaction</h2>
+    <label for="buyCurrency">Currency:</label>
+    <select id="buyCurrency">
+      <option value="USD">USD</option>
+      <option value="EUR">EUR</option>
+      <option value="USDT">USDT</option>
+    </select>
+    <label for="buyAmount">Amount:</label>
+    <input type="number" id="buyAmount" step="0.01" required>
+    <label for="buyRate">Rate (MVR):</label>
+    <input type="number" id="buyRate" step="0.01" required>
+    <label for="buyRemarks">Remarks:</label>
+    <textarea id="buyRemarks"></textarea>
+    <button type="submit">Add Buy Transaction</button>
   </form>
 
   <!-- Sell Form -->
   <form id="sellForm">
-    <!-- Add sell form fields here -->
+    <h2>Sell Transaction</h2>
+    <label for="sellCurrency">Currency:</label>
+    <select id="sellCurrency">
+      <option value="USD">USD</option>
+      <option value="EUR">EUR</option>
+      <option value="USDT">USDT</option>
+    </select>
+    <label for="sellAmount">Amount:</label>
+    <input type="number" id="sellAmount" step="0.01" required>
+    <label for="sellRate">Rate (MVR):</label>
+    <input type="number" id="sellRate" step="0.01" required>
+    <label for="sellRemarks">Remarks:</label>
+    <textarea id="sellRemarks"></textarea>
+    <button type="submit">Add Sell Transaction</button>
   </form>
 
   <!-- Payment Form -->
   <form id="paymentForm">
-    <!-- Add payment form fields here -->
+    <h2>Payment Transaction</h2>
+    <label for="paymentType">Type:</label>
+    <select id="paymentType">
+      <option value="In">Payment In</option>
+      <option value="Out">Payment Out</option>
+    </select>
+    <label for="paymentAmount">Amount:</label>
+    <input type="number" id="paymentAmount" step="0.01" required>
+    <label for="paymentRemarks">Remarks:</label>
+    <textarea id="paymentRemarks"></textarea>
+    <button type="submit">Add Payment Transaction</button>
   </form>
 
   <!-- Capital Form -->
   <form id="capitalForm">
-    <!-- Add capital form fields here -->
+    <h2>Capital Transaction</h2>
+    <label for="capitalAction">Action:</label>
+    <select id="capitalAction">
+      <option value="Set">Set Capital</option>
+      <option value="Add">Add Capital</option>
+      <option value="Deduct">Deduct Capital</option>
+    </select>
+    <label for="capitalAmount">Amount:</label>
+    <input type="number" id="capitalAmount" step="0.01" required>
+    <label for="capitalRemarks">Remarks:</label>
+    <textarea id="capitalRemarks"></textarea>
+    <button type="submit">Add Capital Transaction</button>
   </form>
 
   <!-- Transaction History -->
+  <h2>Transaction History</h2>
   <table id="transactionHistory">
     <thead>
       <tr>
@@ -50,7 +232,7 @@
   </table>
 
   <!-- Summary Sections -->
-  <div id="buySummary">
+  <div class="summary-section" id="buySummary">
     <h2>Buy Summary</h2>
     <p>Total Purchased USD: <span id="totalPurchasedUSD">0.00</span></p>
     <p>Total Purchased EUR: <span id="totalPurchasedEUR">0.00</span></p>
@@ -58,7 +240,7 @@
     <p>Average Purchase Cost: <span id="avgPurchaseCost">0.00</span></p>
   </div>
 
-  <div id="sellSummary">
+  <div class="summary-section" id="sellSummary">
     <h2>Sell Summary</h2>
     <p>Total Sold USD: <span id="totalSoldUSD">0.00</span></p>
     <p>Total Sold EUR: <span id="totalSoldEUR">0.00</span></p>
@@ -67,14 +249,14 @@
     <p>Current Profit: <span id="currentProfit">0.00</span></p>
   </div>
 
-  <div id="paymentSummary">
+  <div class="summary-section" id="paymentSummary">
     <h2>Payment Summary</h2>
     <p>Total Payment In: <span id="totalPaymentIn">0.00</span></p>
     <p>Total Payment Out: <span id="totalPaymentOut">0.00</span></p>
     <p>Net Payment: <span id="netPayment">0.00</span></p>
   </div>
 
-  <div id="capitalSummary">
+  <div class="summary-section" id="capitalSummary">
     <h2>Capital Summary</h2>
     <p>Initial Capital: <span id="initialCapital">0.00</span></p>
     <p>Amount Deducted: <span id="amountDeducted">0.00</span></p>
@@ -82,7 +264,7 @@
   </div>
 
   <!-- Currency Balances -->
-  <div id="currencyBalances">
+  <div class="summary-section" id="currencyBalances">
     <h2>Currency Balances</h2>
     <p>Balance USD: <span id="balanceUSD">0.00</span></p>
     <p>Balance EUR: <span id="balanceEUR">0.00</span></p>
