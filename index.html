@@ -3,93 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Currency Purchase Tracker</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Transaction Manager</title>
+  <style>
+    /* Add your CSS styles here */
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Currency Purchase Tracker</h1>
+  <h1>Transaction Manager</h1>
 
-    <!-- Buy Section -->
-    <div class="section">
-      <h2>Buy Currency</h2>
-      <form id="buyForm">
-        <label for="buyCurrency">Currency:</label>
-        <select id="buyCurrency" required>
-          <option value="USD">USD</option>
-          <option value="EUR">EUR</option>
-          <option value="USDT">USDT</option>
-        </select>
+  <!-- Buy Form -->
+  <form id="buyForm">
+    <!-- Add buy form fields here -->
+  </form>
 
-        <label for="buyAmount">Amount:</label>
-        <input type="number" id="buyAmount" step="0.01" required>
-        
-        <label for="buyRate">Rate (to MVR):</label>
-        <input type="number" id="buyRate" step="0.01" required>
-        
-        <label for="buyRemarks">Remarks:</label>
-        <input type="text" id="buyRemarks">
-        
-        <button type="submit">Add Purchase</button>
-      </form>
-      <h3>Buy Summary</h3>
-      <p>Total Purchased (USD): <span id="totalPurchasedUSD">0</span></p>
-      <p>Total Purchased (EUR): <span id="totalPurchasedEUR">0</span></p>
-      <p>Total Purchased (USDT): <span id="totalPurchasedUSDT">0</span></p>
-      <p>Average Purchase Cost (MVR): <span id="avgPurchaseCost">0</span></p>
-    </div>
+  <!-- Sell Form -->
+  <form id="sellForm">
+    <!-- Add sell form fields here -->
+  </form>
 
-    <!-- Sell Section -->
-    <div class="section">
-      <h2>Sell Currency</h2>
-      <form id="sellForm">
-        <label for="sellCurrency">Currency:</label>
-        <select id="sellCurrency" required>
-          <option value="USD">USD</option>
-          <option value="EUR">EUR</option>
-          <option value="USDT">USDT</option>
-        </select>
+  <!-- Payment Form -->
+  <form id="paymentForm">
+    <!-- Add payment form fields here -->
+  </form>
 
-        <label for="sellAmount">Amount:</label>
-        <input type="number" id="sellAmount" step="0.01" required>
-        
-        <label for="sellRate">Rate (to MVR):</label>
-        <input type="number" id="sellRate" step="0.01" required>
-        
-        <label for="sellRemarks">Remarks:</label>
-        <input type="text" id="sellRemarks">
-        
-        <button type="submit">Add Sale</button>
-      </form>
-      <h3>Sell Summary</h3>
-      <p>Total Sold (USD): <span id="totalSoldUSD">0</span></p>
-      <p>Total Sold (EUR): <span id="totalSoldEUR">0</span></p>
-      <p>Total Sold (USDT): <span id="totalSoldUSDT">0</span></p>
-      <p>Average Sell Price (MVR): <span id="avgSellPrice">0</span></p>
-      <p>Current Profit (MVR): <span id="currentProfit">0</span></p>
-    </div>
+  <!-- Capital Form -->
+  <form id="capitalForm">
+    <!-- Add capital form fields here -->
+  </form>
 
-    <!-- Transaction History -->
-    <div class="section">
-      <h2>Transaction History</h2>
-      <button id="exportCSV" class="export-button">Export to CSV</button>
-      <table id="transactionHistory">
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>Currency</th>
-            <th>Amount</th>
-            <th>Rate (MVR)</th>
-            <th>Remarks</th>
-            <th>Timestamp</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-    </div>
+  <!-- Transaction History -->
+  <table id="transactionHistory">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Currency</th>
+        <th>Amount</th>
+        <th>Rate (MVR)</th>
+        <th>Remarks</th>
+        <th>Timestamp</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Rows will be populated by JavaScript -->
+    </tbody>
+  </table>
+
+  <!-- Summary Sections -->
+  <div id="buySummary">
+    <h2>Buy Summary</h2>
+    <p>Total Purchased USD: <span id="totalPurchasedUSD">0.00</span></p>
+    <p>Total Purchased EUR: <span id="totalPurchasedEUR">0.00</span></p>
+    <p>Total Purchased USDT: <span id="totalPurchasedUSDT">0.00</span></p>
+    <p>Average Purchase Cost: <span id="avgPurchaseCost">0.00</span></p>
   </div>
+
+  <div id="sellSummary">
+    <h2>Sell Summary</h2>
+    <p>Total Sold USD: <span id="totalSoldUSD">0.00</span></p>
+    <p>Total Sold EUR: <span id="totalSoldEUR">0.00</span></p>
+    <p>Total Sold USDT: <span id="totalSoldUSDT">0.00</span></p>
+    <p>Average Sell Price: <span id="avgSellPrice">0.00</span></p>
+    <p>Current Profit: <span id="currentProfit">0.00</span></p>
+  </div>
+
+  <div id="paymentSummary">
+    <h2>Payment Summary</h2>
+    <p>Total Payment In: <span id="totalPaymentIn">0.00</span></p>
+    <p>Total Payment Out: <span id="totalPaymentOut">0.00</span></p>
+    <p>Net Payment: <span id="netPayment">0.00</span></p>
+  </div>
+
+  <div id="capitalSummary">
+    <h2>Capital Summary</h2>
+    <p>Initial Capital: <span id="initialCapital">0.00</span></p>
+    <p>Amount Deducted: <span id="amountDeducted">0.00</span></p>
+    <p>Balance Capital: <span id="balanceCapital">0.00</span></p>
+  </div>
+
+  <!-- Currency Balances -->
+  <div id="currencyBalances">
+    <h2>Currency Balances</h2>
+    <p>Balance USD: <span id="balanceUSD">0.00</span></p>
+    <p>Balance EUR: <span id="balanceEUR">0.00</span></p>
+    <p>Balance USDT: <span id="balanceUSDT">0.00</span></p>
+  </div>
+
+  <!-- Export to CSV Button -->
+  <button id="exportCSV">Export to CSV</button>
 
   <script src="script.js"></script>
 </body>
