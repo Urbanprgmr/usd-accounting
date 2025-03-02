@@ -267,25 +267,6 @@
     <button type="submit">Add Capital Transaction</button>
   </form>
 
-  <!-- Transaction History -->
-  <h2>Transaction History</h2>
-  <table id="transactionHistory">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Currency</th>
-        <th>Amount</th>
-        <th>Rate (MVR)</th>
-        <th>Remarks</th>
-        <th>Timestamp</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Rows will be populated by JavaScript -->
-    </tbody>
-  </table>
-
   <!-- Summary Sections -->
   <div class="summary-section" id="buySummary">
     <h2>Buy Summary</h2>
@@ -304,6 +285,14 @@
     <p>Current Profit: <span id="currentProfit">0.00</span></p>
   </div>
 
+  <!-- Currency Balances -->
+  <div class="summary-section" id="currencyBalances">
+    <h2>Currency Balances</h2>
+    <p>Balance USD: <span id="balanceUSD">0.00</span></p>
+    <p>Balance EUR: <span id="balanceEUR">0.00</span></p>
+    <p>Balance USDT: <span id="balanceUSDT">0.00</span></p>
+  </div>
+
   <div class="summary-section" id="paymentSummary">
     <h2>Payment Summary</h2>
     <p>Total Payment In: <span id="totalPaymentIn">0.00</span></p>
@@ -319,13 +308,24 @@
     <p>Balance Capital: <span id="balanceCapital">0.00</span></p>
   </div>
 
-  <!-- Currency Balances -->
-  <div class="summary-section" id="currencyBalances">
-    <h2>Currency Balances</h2>
-    <p>Balance USD: <span id="balanceUSD">0.00</span></p>
-    <p>Balance EUR: <span id="balanceEUR">0.00</span></p>
-    <p>Balance USDT: <span id="balanceUSDT">0.00</span></p>
-  </div>
+  <!-- Transaction History -->
+  <h2>Transaction History</h2>
+  <table id="transactionHistory">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Currency</th>
+        <th>Amount</th>
+        <th>Rate (MVR)</th>
+        <th>Remarks</th>
+        <th>Timestamp</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Rows will be populated by JavaScript -->
+    </tbody>
+  </table>
 
   <!-- Export to CSV Button -->
   <button id="exportCSV">Export to CSV</button>
