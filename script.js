@@ -80,7 +80,7 @@ function updateUI() {
 
   // Update Transaction History
   const tbody = document.querySelector('#transactionHistory tbody');
-  tbody.innerHTML = transactions.map(transaction => `
+  tbody.innerHTML = transactions.map((transaction, index) => `
     <tr>
       <td>${transaction.type}</td>
       <td>${transaction.currency}</td>
@@ -88,8 +88,74 @@ function updateUI() {
       <td>${transaction.rate.toFixed(2)}</td>
       <td>${transaction.remarks}</td>
       <td>${transaction.timestamp}</td>
+      <td>
+        <button class="action-button edit-button" onclick="editTransaction(${index})">Edit</button>
+        <button class="action-button delete-button" onclick="deleteTransaction(${index})">Delete</button>
+      </td>
     </tr>
   `).join('');
+}
+
+// Edit Transaction
+function editTransaction(index) {
+  const transaction = transactions[index];
+  const newType = prompt('Enter new type (Buy/Sell):', transaction.type);
+  const newCurrency = prompt('Enter new currency (USD/EUR/USDT):', transaction.currency);
+  const newAmount = parseFloat(prompt('Enter new amount:', transaction.amount));
+  const newRate = parseFloat(prompt('Enter new rate:', transaction.rate));
+  const newRemarks = prompt('Enter new remarks:', transaction.remarks);
+
+  if (newType && newCurrency && !isNaN(newAmount) && !isNaN(newRate)) {
+    // Update totals
+    if (transaction.type === 'Buy') {
+      totalPurchased[transaction.currency] -= transaction.amount;
+      totalBuyCost -= transaction.amount * transaction.rate;
+    } else {
+      totalSold[transaction.currency] -= transaction.amount;
+      totalSellRevenue -= transaction.amount * transaction.rate;
+    }
+
+    // Update transaction
+    transactions[index] = {
+      type: newType,
+      currency: newCurrency,
+      amount: newAmount,
+      rate: newRate,
+      remarks: newRemarks,
+      timestamp: new Date().toLocaleString(),
+    };
+
+    // Update totals with new values
+    if (newType === 'Buy') {
+      totalPurchased[newCurrency] += newAmount;
+      totalBuyCost += newAmount * newRate;
+    } else {
+      totalSold[newCurrency] += newAmount;
+      totalSellRevenue += newAmount * newRate;
+    }
+
+    saveToLocalStorage();
+    updateUI();
+  }
+}
+
+// Delete Transaction
+function deleteTransaction(index) {
+  const transaction = transactions[index];
+  if (confirm('Are you sure you want to delete this transaction?')) {
+    // Update totals
+    if (transaction.type === 'Buy') {
+      totalPurchased[transaction.currency] -= transaction.amount;
+      totalBuyCost -= transaction.amount * transaction.rate;
+    } else {
+      totalSold[transaction.currency] -= transaction.amount;
+      totalSellRevenue -= transaction.amount * transaction.rate;
+    }
+
+    transactions.splice(index, 1);
+    saveToLocalStorage();
+    updateUI();
+  }
 }
 
 // Export to CSV
