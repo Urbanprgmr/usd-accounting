@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>USD Purchase Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>USD Purchase Tracker</h1>
+
+    <!-- Buy Section -->
+    <div class="section">
+      <h2>Buy USD</h2>
+      <form id="buyForm">
+        <label for="buyAmount">Amount (USD):</label>
+        <input type="number" id="buyAmount" step="0.01" required>
+        
+        <label for="buyRate">Rate (USD to MVR):</label>
+        <input type="number" id="buyRate" step="0.01" required>
+        
+        <label for="buyRemarks">Remarks:</label>
+        <input type="text" id="buyRemarks">
+        
+        <button type="submit">Add Purchase</button>
+      </form>
+      <h3>Buy Summary</h3>
+      <p>Total Purchased (USD): <span id="totalPurchased">0</span></p>
+      <p>Average Purchase Cost (MVR): <span id="avgPurchaseCost">0</span></p>
+    </div>
+
+    <!-- Sell Section -->
+    <div class="section">
+      <h2>Sell USD</h2>
+      <form id="sellForm">
+        <label for="sellAmount">Amount (USD):</label>
+        <input type="number" id="sellAmount" step="0.01" required>
+        
+        <label for="sellRate">Rate (USD to MVR):</label>
+        <input type="number" id="sellRate" step="0.01" required>
+        
+        <label for="sellRemarks">Remarks:</label>
+        <input type="text" id="sellRemarks">
+        
+        <button type="submit">Add Sale</button>
+      </form>
+      <h3>Sell Summary</h3>
+      <p>Total Sold (USD): <span id="totalSold">0</span></p>
+      <p>Average Sell Price (MVR): <span id="avgSellPrice">0</span></p>
+      <p>Current Profit (MVR): <span id="currentProfit">0</span></p>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="section">
+      <h2>Transaction History</h2>
+      <table id="transactionHistory">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Amount (USD)</th>
+            <th>Rate (MVR)</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
