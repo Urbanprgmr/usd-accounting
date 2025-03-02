@@ -1,0 +1,101 @@
+/* General Styles */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #0d0d0d; /* Dark background */
+  color: #ffffff; /* White text */
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #1a1a1a; /* Slightly lighter dark background */
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); /* Neon glow effect */
+  border-radius: 10px;
+}
+
+h1, h2, h3 {
+  color: #00ffcc; /* Neon cyan */
+  text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc; /* Glowing effect */
+}
+
+.section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #262626; /* Darker section background */
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); /* Subtle neon glow */
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+  color: #00ffcc; /* Neon cyan */
+}
+
+input {
+  margin-bottom: 10px;
+  padding: 8px;
+  background-color: #333333; /* Dark input background */
+  border: 1px solid #00ffcc; /* Neon cyan border */
+  border-radius: 4px;
+  color: #ffffff; /* White text */
+  font-size: 16px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #ff00ff; /* Neon pink for focus */
+  box-shadow: 0 0 10px #ff00ff; /* Glow effect on focus */
+}
+
+button {
+  padding: 10px;
+  background-color: #ff00ff; /* Neon pink */
+  color: #ffffff; /* White text */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+  background-color: #cc00cc; /* Darker neon pink */
+  box-shadow: 0 0 15px #ff00ff; /* Glow effect on hover */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #00ffcc; /* Neon cyan border */
+  text-align: left;
+}
+
+th {
+  background-color: #1a1a1a; /* Dark header background */
+  color: #00ffcc; /* Neon cyan text */
+  text-shadow: 0 0 10px #00ffcc; /* Glow effect */
+}
+
+td {
+  background-color: #262626; /* Dark cell background */
+  color: #ffffff; /* White text */
+}
+
+/* Neon glow for table rows */
+tr:hover {
+  background-color: rgba(0, 255, 255, 0.1); /* Neon cyan highlight */
+  box-shadow: 0 0 10px #00ffcc; /* Glow effect */
+}
