@@ -114,3 +114,30 @@ tr:hover {
   background-color: #00ccaa;
   box-shadow: 0 0 15px #00ffcc;
 }
+
+.action-button {
+  padding: 5px 10px;
+  margin: 2px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.edit-button {
+  background-color: #00ffcc;
+  color: #0d0d0d;
+}
+
+.edit-button:hover {
+  background-color: #00ccaa;
+}
+
+.delete-button {
+  background-color: #ff00ff;
+  color: #0d0d0d;
+}
+
+.delete-button:hover {
+  background-color: #cc00cc;
+}
