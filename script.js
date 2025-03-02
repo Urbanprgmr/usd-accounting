@@ -11,12 +11,18 @@ let totalSold = {
 };
 let totalBuyCost = parseFloat(localStorage.getItem('totalBuyCost')) || 0;
 let totalSellRevenue = parseFloat(localStorage.getItem('totalSellRevenue')) || 0;
+let totalPaymentIn = parseFloat(localStorage.getItem('totalPaymentIn')) || 0;
+let totalPaymentOut = parseFloat(localStorage.getItem('totalPaymentOut')) || 0;
+let initialCapital = parseFloat(localStorage.getItem('initialCapital')) || 0;
+let amountDeducted = parseFloat(localStorage.getItem('amountDeducted')) || 0;
+let balanceCapital = parseFloat(localStorage.getItem('balanceCapital')) || 0;
 
 // Load saved data on page load
 document.addEventListener('DOMContentLoaded', () => {
   updateUI();
 });
 
+// Buy Form Submission
 document.getElementById('buyForm').addEventListener('submit', function (e) {
   e.preventDefault();
   const currency = document.getElementById('buyCurrency').value;
@@ -33,6 +39,7 @@ document.getElementById('buyForm').addEventListener('submit', function (e) {
   updateUI();
 });
 
+// Sell Form Submission
 document.getElementById('sellForm').addEventListener('submit', function (e) {
   e.preventDefault();
   const currency = document.getElementById('sellCurrency').value;
@@ -49,6 +56,66 @@ document.getElementById('sellForm').addEventListener('submit', function (e) {
   updateUI();
 });
 
+// Payment Form Submission
+document.getElementById('paymentForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const type = document.getElementById('paymentType').value;
+  const amount = parseFloat(document.getElementById('paymentAmount').value);
+  const remarks = document.getElementById('paymentRemarks').value;
+  const timestamp = new Date().toLocaleString();
+
+  if (type === 'In') {
+    if (amountDeducted > 0) {
+      const deductionAmount = Math.min(amountDeducted, amount);
+      amountDeducted -= deductionAmount;
+      balanceCapital += deductionAmount;
+      totalPaymentIn += (amount - deductionAmount);
+    } else {
+      totalPaymentIn += amount;
+    }
+  } else {
+    totalPaymentOut += amount;
+
+    const netPayment = totalPaymentIn - totalPaymentOut;
+    if (netPayment < 0) {
+      const deductionAmount = Math.abs(netPayment);
+      amountDeducted += deductionAmount;
+      balanceCapital -= deductionAmount;
+      totalPaymentOut = totalPaymentIn; // Reset payment out to match payment in
+    }
+  }
+
+  transactions.push({ type: `Payment ${type}`, currency: 'MVR', amount, rate: 1, remarks, timestamp });
+
+  saveToLocalStorage();
+  updateUI();
+});
+
+// Capital Form Submission
+document.getElementById('capitalForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const action = document.getElementById('capitalAction').value;
+  const amount = parseFloat(document.getElementById('capitalAmount').value);
+  const remarks = document.getElementById('capitalRemarks').value;
+  const timestamp = new Date().toLocaleString();
+
+  if (action === 'Set') {
+    initialCapital = amount;
+    balanceCapital = amount;
+    amountDeducted = 0;
+  } else if (action === 'Add') {
+    balanceCapital += amount;
+  } else if (action === 'Deduct') {
+    balanceCapital -= amount;
+  }
+
+  transactions.push({ type: `Capital ${action}`, currency: 'MVR', amount, rate: 1, remarks, timestamp });
+
+  saveToLocalStorage();
+  updateUI();
+});
+
+// Save Data to LocalStorage
 function saveToLocalStorage() {
   localStorage.setItem('transactions', JSON.stringify(transactions));
   localStorage.setItem('totalPurchasedUSD', totalPurchased.USD);
@@ -59,8 +126,14 @@ function saveToLocalStorage() {
   localStorage.setItem('totalSoldUSDT', totalSold.USDT);
   localStorage.setItem('totalBuyCost', totalBuyCost);
   localStorage.setItem('totalSellRevenue', totalSellRevenue);
+  localStorage.setItem('totalPaymentIn', totalPaymentIn);
+  localStorage.setItem('totalPaymentOut', totalPaymentOut);
+  localStorage.setItem('initialCapital', initialCapital);
+  localStorage.setItem('amountDeducted', amountDeducted);
+  localStorage.setItem('balanceCapital', balanceCapital);
 }
 
+// Update UI
 function updateUI() {
   // Update Buy Summary
   document.getElementById('totalPurchasedUSD').textContent = totalPurchased.USD.toFixed(2);
@@ -77,6 +150,25 @@ function updateUI() {
   document.getElementById('avgSellPrice').textContent = avgSellPrice.toFixed(2);
   const currentProfit = totalSellRevenue - (totalSold.USD + totalSold.EUR + totalSold.USDT) * avgPurchaseCost;
   document.getElementById('currentProfit').textContent = currentProfit.toFixed(2);
+
+  // Update Payment Summary
+  document.getElementById('totalPaymentIn').textContent = totalPaymentIn.toFixed(2);
+  document.getElementById('totalPaymentOut').textContent = totalPaymentOut.toFixed(2);
+  const netPayment = totalPaymentIn - totalPaymentOut;
+  document.getElementById('netPayment').textContent = netPayment.toFixed(2);
+
+  // Update Capital Summary
+  document.getElementById('initialCapital').textContent = initialCapital.toFixed(2);
+  document.getElementById('amountDeducted').textContent = amountDeducted.toFixed(2);
+  document.getElementById('balanceCapital').textContent = balanceCapital.toFixed(2);
+
+  // Update Currency Balances
+  const balanceUSD = totalPurchased.USD - totalSold.USD;
+  const balanceEUR = totalPurchased.EUR - totalSold.EUR;
+  const balanceUSDT = totalPurchased.USDT - totalSold.USDT;
+  document.getElementById('balanceUSD').textContent = balanceUSD.toFixed(2);
+  document.getElementById('balanceEUR').textContent = balanceEUR.toFixed(2);
+  document.getElementById('balanceUSDT').textContent = balanceUSDT.toFixed(2);
 
   // Update Transaction History
   const tbody = document.querySelector('#transactionHistory tbody');
@@ -96,65 +188,85 @@ function updateUI() {
   `).join('');
 }
 
-// Edit Transaction
-function editTransaction(index) {
+// Delete Transaction
+function deleteTransaction(index) {
   const transaction = transactions[index];
-  const newType = prompt('Enter new type (Buy/Sell):', transaction.type);
-  const newCurrency = prompt('Enter new currency (USD/EUR/USDT):', transaction.currency);
-  const newAmount = parseFloat(prompt('Enter new amount:', transaction.amount));
-  const newRate = parseFloat(prompt('Enter new rate:', transaction.rate));
-  const newRemarks = prompt('Enter new remarks:', transaction.remarks);
+  if (confirm('Are you sure you want to delete this transaction?')) {
+    // Update totals based on the transaction type
+    if (transaction.type.startsWith('Payment')) {
+      if (transaction.type === 'Payment In') {
+        totalPaymentIn -= transaction.amount;
+      } else if (transaction.type === 'Payment Out') {
+        totalPaymentOut -= transaction.amount;
+      }
 
-  if (newType && newCurrency && !isNaN(newAmount) && !isNaN(newRate)) {
-    // Update totals
-    if (transaction.type === 'Buy') {
+      // Recalculate net payment and adjust capital if necessary
+      const netPayment = totalPaymentIn - totalPaymentOut;
+      if (netPayment < 0) {
+        const deductionAmount = Math.abs(netPayment);
+        amountDeducted += deductionAmount;
+        balanceCapital -= deductionAmount;
+      } else {
+        // If net payment is positive, reset amountDeducted and adjust balanceCapital
+        amountDeducted = 0;
+        balanceCapital = initialCapital;
+      }
+    } else if (transaction.type.startsWith('Capital')) {
+      if (transaction.type === 'Capital Set') {
+        initialCapital = 0;
+        balanceCapital = 0;
+        amountDeducted = 0;
+      } else if (transaction.type === 'Capital Add') {
+        balanceCapital -= transaction.amount;
+      } else if (transaction.type === 'Capital Deduct') {
+        balanceCapital += transaction.amount;
+      }
+    } else if (transaction.type === 'Buy') {
       totalPurchased[transaction.currency] -= transaction.amount;
       totalBuyCost -= transaction.amount * transaction.rate;
-    } else {
+    } else if (transaction.type === 'Sell') {
       totalSold[transaction.currency] -= transaction.amount;
       totalSellRevenue -= transaction.amount * transaction.rate;
     }
 
-    // Update transaction
-    transactions[index] = {
-      type: newType,
-      currency: newCurrency,
-      amount: newAmount,
-      rate: newRate,
-      remarks: newRemarks,
-      timestamp: new Date().toLocaleString(),
-    };
+    // Remove the transaction from the list
+    transactions.splice(index, 1);
 
-    // Update totals with new values
-    if (newType === 'Buy') {
-      totalPurchased[newCurrency] += newAmount;
-      totalBuyCost += newAmount * newRate;
-    } else {
-      totalSold[newCurrency] += newAmount;
-      totalSellRevenue += newAmount * newRate;
-    }
+    // Recalculate all dependent values
+    recalculateDependentValues();
 
+    // Save updated data to localStorage and refresh the UI
     saveToLocalStorage();
     updateUI();
   }
 }
 
-// Delete Transaction
-function deleteTransaction(index) {
-  const transaction = transactions[index];
-  if (confirm('Are you sure you want to delete this transaction?')) {
-    // Update totals
-    if (transaction.type === 'Buy') {
-      totalPurchased[transaction.currency] -= transaction.amount;
-      totalBuyCost -= transaction.amount * transaction.rate;
-    } else {
-      totalSold[transaction.currency] -= transaction.amount;
-      totalSellRevenue -= transaction.amount * transaction.rate;
-    }
+// Recalculate Dependent Values
+function recalculateDependentValues() {
+  // Recalculate totalPurchased and totalSold
+  totalPurchased = { USD: 0, EUR: 0, USDT: 0 };
+  totalSold = { USD: 0, EUR: 0, USDT: 0 };
+  totalBuyCost = 0;
+  totalSellRevenue = 0;
 
-    transactions.splice(index, 1);
-    saveToLocalStorage();
-    updateUI();
+  transactions.forEach(transaction => {
+    if (transaction.type === 'Buy') {
+      totalPurchased[transaction.currency] += transaction.amount;
+      totalBuyCost += transaction.amount * transaction.rate;
+    } else if (transaction.type === 'Sell') {
+      totalSold[transaction.currency] += transaction.amount;
+      totalSellRevenue += transaction.amount * transaction.rate;
+    }
+  });
+
+  // Recalculate balanceCapital and amountDeducted
+  const netPayment = totalPaymentIn - totalPaymentOut;
+  if (netPayment < 0) {
+    amountDeducted = Math.abs(netPayment);
+    balanceCapital = initialCapital - amountDeducted;
+  } else {
+    amountDeducted = 0;
+    balanceCapital = initialCapital;
   }
 }
 
