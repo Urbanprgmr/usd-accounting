@@ -1,8 +1,8 @@
 /* General Styles */
 body {
   font-family: Arial, sans-serif;
-  background-color: #0d0d0d;
-  color: #ffffff;
+  background-color: #0d0d0d; /* Dark background */
+  color: #ffffff; /* White text */
   margin: 0;
   padding: 0;
 }
@@ -11,14 +11,14 @@ body {
   max-width: 800px;
   margin: 20px auto;
   padding: 20px;
-  background-color: #1a1a1a;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  background-color: #1a1a1a; /* Slightly lighter dark background */
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); /* Neon glow effect */
   border-radius: 10px;
 }
 
 h1, h2, h3 {
-  color: #00ffcc;
-  text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+  color: #00ffcc; /* Neon cyan */
+  text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc; /* Glowing effect */
 }
 
 /* Section Styles */
@@ -26,7 +26,7 @@ h1, h2, h3 {
   margin-bottom: 30px;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); /* Subtle neon glow */
 }
 
 /* Buy Section */
@@ -35,18 +35,19 @@ h1, h2, h3 {
 }
 
 #buyForm label {
-  color: #00ffcc;
+  color: #00ffcc; /* Neon cyan */
 }
 
 #buyForm input, #buyForm select {
-  background-color: #333333;
-  border: 1px solid #00ffcc;
-  color: #ffffff;
+  background-color: #333333; /* Dark input background */
+  border: 1px solid #00ffcc; /* Neon cyan border */
+  color: #ffffff; /* White text */
 }
 
 #buyForm input:focus, #buyForm select:focus {
-  border-color: #ff00ff;
-  box-shadow: 0 0 10px #ff00ff;
+  outline: none;
+  border-color: #ff00ff; /* Neon pink for focus */
+  box-shadow: 0 0 10px #ff00ff; /* Glow effect on focus */
 }
 
 /* Sell Section */
@@ -55,18 +56,78 @@ h1, h2, h3 {
 }
 
 #sellForm label {
-  color: #ff00ff;
+  color: #ff00ff; /* Neon pink */
 }
 
 #sellForm input, #sellForm select {
-  background-color: #333333;
-  border: 1px solid #ff00ff;
-  color: #ffffff;
+  background-color: #333333; /* Dark input background */
+  border: 1px solid #ff00ff; /* Neon pink border */
+  color: #ffffff; /* White text */
 }
 
 #sellForm input:focus, #sellForm select:focus {
-  border-color: #00ffcc;
-  box-shadow: 0 0 10px #00ffcc;
+  outline: none;
+  border-color: #00ffcc; /* Neon cyan for focus */
+  box-shadow: 0 0 10px #00ffcc; /* Glow effect on focus */
+}
+
+/* Payments Section */
+#paymentForm {
+  background-color: #1a1a1a;
+}
+
+#paymentForm label {
+  color: #ffcc00; /* Neon yellow */
+}
+
+#paymentForm input, #paymentForm select {
+  background-color: #333333; /* Dark input background */
+  border: 1px solid #ffcc00; /* Neon yellow border */
+  color: #ffffff; /* White text */
+}
+
+#paymentForm input:focus, #paymentForm select:focus {
+  outline: none;
+  border-color: #00ffcc; /* Neon cyan for focus */
+  box-shadow: 0 0 10px #00ffcc; /* Glow effect on focus */
+}
+
+/* Capital Section */
+#capitalForm {
+  background-color: #1a1a1a;
+}
+
+#capitalForm label {
+  color: #00ccff; /* Neon blue */
+}
+
+#capitalForm input, #capitalForm select {
+  background-color: #333333; /* Dark input background */
+  border: 1px solid #00ccff; /* Neon blue border */
+  color: #ffffff; /* White text */
+}
+
+#capitalForm input:focus, #capitalForm select:focus {
+  outline: none;
+  border-color: #ff00ff; /* Neon pink for focus */
+  box-shadow: 0 0 10px #ff00ff; /* Glow effect on focus */
+}
+
+#initialCapital, #amountDeducted, #balanceCapital {
+  color: #00ffcc; /* Neon cyan */
+}
+
+/* Currency Balances Section */
+#currencyBalances {
+  background-color: #1a1a1a;
+}
+
+#currencyBalances h3 {
+  color: #00ffcc; /* Neon cyan */
+}
+
+#currencyBalances p {
+  color: #ffffff; /* White text */
 }
 
 /* Transaction History Section */
@@ -75,26 +136,26 @@ h1, h2, h3 {
 }
 
 #transactionHistory th {
-  background-color: #1a1a1a;
-  color: #00ffcc;
-  text-shadow: 0 0 10px #00ffcc;
+  background-color: #1a1a1a; /* Dark header background */
+  color: #00ffcc; /* Neon cyan text */
+  text-shadow: 0 0 10px #00ffcc; /* Glow effect */
 }
 
 #transactionHistory td {
-  background-color: #262626;
-  color: #ffffff;
+  background-color: #262626; /* Dark cell background */
+  color: #ffffff; /* White text */
 }
 
 #transactionHistory tr:hover {
-  background-color: rgba(0, 255, 255, 0.1);
-  box-shadow: 0 0 10px #00ffcc;
+  background-color: rgba(0, 255, 255, 0.1); /* Neon cyan highlight */
+  box-shadow: 0 0 10px #00ffcc; /* Glow effect */
 }
 
 /* Buttons */
 button {
   padding: 10px;
-  background-color: #ff00ff;
-  color: #ffffff;
+  background-color: #ff00ff; /* Neon pink */
+  color: #ffffff; /* White text */
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -103,13 +164,13 @@ button {
 }
 
 button:hover {
-  background-color: #cc00cc;
-  box-shadow: 0 0 15px #ff00ff;
+  background-color: #cc00cc; /* Darker neon pink */
+  box-shadow: 0 0 15px #ff00ff; /* Glow effect on hover */
 }
 
 .export-button {
-  background-color: #00ffcc;
-  color: #0d0d0d;
+  background-color: #00ffcc; /* Neon cyan */
+  color: #0d0d0d; /* Dark text */
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
@@ -120,8 +181,8 @@ button:hover {
 }
 
 .export-button:hover {
-  background-color: #00ccaa;
-  box-shadow: 0 0 15px #00ffcc;
+  background-color: #00ccaa; /* Darker neon cyan */
+  box-shadow: 0 0 15px #00ffcc; /* Glow effect */
 }
 
 .action-button {
@@ -134,21 +195,21 @@ button:hover {
 }
 
 .edit-button {
-  background-color: #00ffcc;
-  color: #0d0d0d;
+  background-color: #00ffcc; /* Neon cyan */
+  color: #0d0d0d; /* Dark text */
 }
 
 .edit-button:hover {
-  background-color: #00ccaa;
+  background-color: #00ccaa; /* Darker neon cyan */
 }
 
 .delete-button {
-  background-color: #ff00ff;
-  color: #0d0d0d;
+  background-color: #ff00ff; /* Neon pink */
+  color: #0d0d0d; /* Dark text */
 }
 
 .delete-button:hover {
-  background-color: #cc00cc;
+  background-color: #cc00cc; /* Darker neon pink */
 }
 
 /* Mobile-Friendly Styles */
