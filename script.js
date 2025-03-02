@@ -16,6 +16,7 @@ let totalPaymentOut = parseFloat(localStorage.getItem('totalPaymentOut')) || 0;
 let initialCapital = parseFloat(localStorage.getItem('initialCapital')) || 0;
 let amountDeducted = parseFloat(localStorage.getItem('amountDeducted')) || 0;
 let balanceCapital = parseFloat(localStorage.getItem('balanceCapital')) || 0;
+let takeProfit = parseFloat(localStorage.getItem('takeProfit')) || 0;
 
 // Load saved data on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -30,6 +31,9 @@ document.getElementById('buyForm').addEventListener('submit', function (e) {
   const rate = parseFloat(document.getElementById('buyRate').value);
   const remarks = document.getElementById('buyRemarks').value;
   const timestamp = new Date().toLocaleString();
+
+  // Deduct amount from balanceCapital
+  balanceCapital -= amount * rate;
 
   transactions.push({ type: 'Buy', currency, amount, rate, remarks, timestamp });
   totalPurchased[currency] += amount;
@@ -47,6 +51,9 @@ document.getElementById('sellForm').addEventListener('submit', function (e) {
   const rate = parseFloat(document.getElementById('sellRate').value);
   const remarks = document.getElementById('sellRemarks').value;
   const timestamp = new Date().toLocaleString();
+
+  // Add amount to balanceCapital
+  balanceCapital += amount * rate;
 
   transactions.push({ type: 'Sell', currency, amount, rate, remarks, timestamp });
   totalSold[currency] += amount;
@@ -115,6 +122,19 @@ document.getElementById('capitalForm').addEventListener('submit', function (e) {
   updateUI();
 });
 
+// Take Profit Form Submission
+document.getElementById('takeProfitForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const amount = parseFloat(document.getElementById('takeProfitAmount').value);
+
+  // Deduct the take profit amount from the total profit
+  takeProfit += amount;
+  balanceCapital -= amount;
+
+  saveToLocalStorage();
+  updateUI();
+});
+
 // Save Data to LocalStorage
 function saveToLocalStorage() {
   localStorage.setItem('transactions', JSON.stringify(transactions));
@@ -131,6 +151,7 @@ function saveToLocalStorage() {
   localStorage.setItem('initialCapital', initialCapital);
   localStorage.setItem('amountDeducted', amountDeducted);
   localStorage.setItem('balanceCapital', balanceCapital);
+  localStorage.setItem('takeProfit', takeProfit);
 }
 
 // Update UI
@@ -148,7 +169,7 @@ function updateUI() {
   document.getElementById('totalSoldUSDT').textContent = totalSold.USDT.toFixed(2);
   const avgSellPrice = totalSellRevenue / (totalSold.USD + totalSold.EUR + totalSold.USDT) || 0;
   document.getElementById('avgSellPrice').textContent = avgSellPrice.toFixed(2);
-  const currentProfit = totalSellRevenue - (totalSold.USD + totalSold.EUR + totalSold.USDT) * avgPurchaseCost;
+  const currentProfit = totalSellRevenue - (totalSold.USD + totalSold.EUR + totalSold.USDT) * avgPurchaseCost - takeProfit;
   document.getElementById('currentProfit').textContent = currentProfit.toFixed(2);
 
   // Update Payment Summary
@@ -224,9 +245,11 @@ function deleteTransaction(index) {
     } else if (transaction.type === 'Buy') {
       totalPurchased[transaction.currency] -= transaction.amount;
       totalBuyCost -= transaction.amount * transaction.rate;
+      balanceCapital += transaction.amount * transaction.rate; // Add back to capital
     } else if (transaction.type === 'Sell') {
       totalSold[transaction.currency] -= transaction.amount;
       totalSellRevenue -= transaction.amount * transaction.rate;
+      balanceCapital -= transaction.amount * transaction.rate; // Deduct from capital
     }
 
     // Remove the transaction from the list
@@ -269,22 +292,6 @@ function recalculateDependentValues() {
     balanceCapital = initialCapital;
   }
 }
-
-// Clear Payment Summary
-function clearPaymentSummary() {
-  totalPaymentIn = 0;
-  totalPaymentOut = 0;
-  saveToLocalStorage();
-  updateUI();
-}
-
-// Add event listener for the Clear Payment button
-document.getElementById('clearPayment').addEventListener('click', function (e) {
-  e.preventDefault();
-  if (confirm('Are you sure you want to clear the payment summary?')) {
-    clearPaymentSummary();
-  }
-});
 
 // Export to CSV
 document.getElementById('exportCSV').addEventListener('click', () => {
