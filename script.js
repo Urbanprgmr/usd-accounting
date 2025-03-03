@@ -16,7 +16,7 @@ let totalPaymentIn = parseFloat(localStorage.getItem('totalPaymentIn')) || 0;
 let totalPaymentOut = parseFloat(localStorage.getItem('totalPaymentOut')) || 0;
 let initialCapital = parseFloat(localStorage.getItem('initialCapital')) || 0;
 let amountDeducted = parseFloat(localStorage.getItem('amountDeducted')) || 0;
-let balanceCapital = parseFloat(localStorage.getItem('balanceCapital')) || 0;
+let balanceCapital = parseFloat(localStorage.getItem('balanceCapital')) || initialCapital;
 let totalTakenProfit = parseFloat(localStorage.getItem('totalTakenProfit')) || 0;
 
 // Load saved data on page load
@@ -56,22 +56,24 @@ function updateUI() {
   document.getElementById('amountDeducted').textContent = amountDeducted.toFixed(2);
 
   // Update Transaction History Table
-  const tbody = document.querySelector('#transactionHistory tbody');
-  tbody.innerHTML = transactions.length > 0 ? transactions.map((transaction, index) => `
-    <tr>
-      <td>${transaction.type}</td>
-      <td>${transaction.currency}</td>
-      <td>${transaction.amount.toFixed(2)}</td>
-      <td>${transaction.rate.toFixed(2)}</td>
-      <td>${transaction.remarks}</td>
-      <td>${transaction.timestamp}</td>
-      <td>${transaction.profit ? transaction.profit.toFixed(2) : '-'}</td>
-      <td>
-        <button class="btn btn-warning btn-sm" onclick="editTransaction(${index})">Edit</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteTransaction(${index})">Delete</button>
-      </td>
-    </tr>
-  `).join('') : "<tr><td colspan='8' class='text-center'>No transactions yet</td></tr>";
+  const tbody = document.getElementById('transactionHistory');
+  tbody.innerHTML = transactions.length > 0
+    ? transactions.map((transaction, index) => `
+      <tr>
+        <td>${transaction.type}</td>
+        <td>${transaction.currency}</td>
+        <td>${transaction.amount.toFixed(2)}</td>
+        <td>${transaction.rate.toFixed(2)}</td>
+        <td>${transaction.remarks}</td>
+        <td>${transaction.timestamp}</td>
+        <td>${transaction.profit ? transaction.profit.toFixed(2) : '-'}</td>
+        <td>
+          <button class="btn btn-warning btn-sm" onclick="editTransaction(${index})">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteTransaction(${index})">Delete</button>
+        </td>
+      </tr>
+    `).join('')
+    : "<tr><td colspan='8' class='text-center'>No transactions yet</td></tr>";
 }
 
 // **Buy Currency**
@@ -116,29 +118,16 @@ document.getElementById('sellForm').addEventListener('submit', function (e) {
   updateUI();
 });
 
-// **Payment Handling**
-document.getElementById('paymentForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-  const type = document.getElementById('paymentType').value;
-  const amount = parseFloat(document.getElementById('paymentAmount').value);
-  const timestamp = new Date().toLocaleString();
-
-  if (type === 'In') {
-    totalPaymentIn += amount;
-  } else {
-    totalPaymentOut += amount;
-  }
-
-  transactions.push({ type: `Payment ${type}`, currency: 'MVR', amount, rate: 1, timestamp });
-
-  saveToLocalStorage();
-  updateUI();
-});
-
 // **Take Profit**
 document.getElementById('takeProfitForm').addEventListener('submit', function (e) {
   e.preventDefault();
   const amount = parseFloat(document.getElementById('takeProfitAmount').value);
+
+  if (amount > totalSellRevenue - totalBuyCost - totalTakenProfit) {
+    alert("You cannot take more profit than available.");
+    return;
+  }
+
   totalTakenProfit += amount;
   balanceCapital -= amount;
 
