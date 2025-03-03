@@ -11,14 +11,23 @@
     <h1>Currency Trading App</h1>
 
     <!-- Budget Section -->
-    <div class="section">
-      <h2>Budget: <span id="budget">0</span> MVR</h2>
+    <div class="card">
+      <h2>Budget</h2>
+      <p>Current Budget: <span id="budget">0</span> MVR</p>
       <input type="number" id="setBudget" placeholder="Set Budget">
       <button onclick="setBudget()">Set Budget</button>
     </div>
 
+    <!-- Currency Balances -->
+    <div class="card">
+      <h2>Currency Balances</h2>
+      <p>USD: <span id="usdBalance">0</span></p>
+      <p>USDT: <span id="usdtBalance">0</span></p>
+      <p>EUR: <span id="eurBalance">0</span></p>
+    </div>
+
     <!-- Buy/Sell Section -->
-    <div class="section">
+    <div class="card">
       <h2>Trade Currencies</h2>
       <select id="currencyType">
         <option value="USD">USD</option>
@@ -30,8 +39,15 @@
       <button onclick="sellCurrency()">Sell</button>
     </div>
 
+    <!-- Withdraw Profits -->
+    <div class="card">
+      <h2>Withdraw Profits</h2>
+      <input type="number" id="withdrawAmount" placeholder="Amount">
+      <button onclick="withdrawProfit()">Withdraw</button>
+    </div>
+
     <!-- Transaction History -->
-    <div class="section">
+    <div class="card">
       <h2>Transaction History</h2>
       <table id="transactionHistory">
         <thead>
