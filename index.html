@@ -31,24 +31,38 @@
     <div class="container">
         <h2 class="text-center mt-4 mb-4">Capital & Payments Management</h2>
 
-        <!-- Capital & Profit Overview -->
+        <!-- Capital Overview -->
         <div class="row">
             <div class="col-md-6">
                 <div class="card shadow">
                     <div class="card-body text-center">
-                        <h5>Balance Capital (MVR)</h5>
-                        <h3 id="balanceCapital" class="text-primary">0.00</h3>
-                        <button class="btn btn-outline-primary btn-sm" onclick="editCapital()">Edit Capital</button>
+                        <h5>Initial Capital (MVR)</h5>
+                        <h3 id="initialCapital" class="text-dark">0.00</h3>
+                        <button class="btn btn-outline-primary btn-sm" onclick="editInitialCapital()">Edit Initial Capital</button>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card shadow">
                     <div class="card-body text-center">
-                        <h5>Total Profit (MVR)</h5>
-                        <h3 id="totalProfit" class="text-success">0.00</h3>
+                        <h5>Balance Capital (MVR)</h5>
+                        <h3 id="balanceCapital" class="text-primary">0.00</h3>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Currency Balances -->
+        <div class="card shadow">
+            <div class="card-body">
+                <h4>Currency Balances</h4>
+                <p>Purchased USD: <span id="totalPurchasedUSD">0.00</span></p>
+                <p>Purchased EUR: <span id="totalPurchasedEUR">0.00</span></p>
+                <p>Purchased USDT: <span id="totalPurchasedUSDT">0.00</span></p>
+
+                <p>Sold USD: <span id="totalSoldUSD">0.00</span></p>
+                <p>Sold EUR: <span id="totalSoldEUR">0.00</span></p>
+                <p>Sold USDT: <span id="totalSoldUSDT">0.00</span></p>
             </div>
         </div>
 
@@ -68,11 +82,11 @@
                         </div>
                         <div class="col-md-4">
                             <label>Amount</label>
-                            <input type="number" id="buyAmount" class="form-control" required>
+                            <input type="number" id="buyAmount" class="form-control" step="0.01" required>
                         </div>
                         <div class="col-md-4">
                             <label>Rate</label>
-                            <input type="number" id="buyRate" class="form-control" required>
+                            <input type="number" id="buyRate" class="form-control" step="0.01" required>
                         </div>
                     </div>
                     <label>Remarks</label>
@@ -98,11 +112,11 @@
                         </div>
                         <div class="col-md-4">
                             <label>Amount</label>
-                            <input type="number" id="sellAmount" class="form-control" required>
+                            <input type="number" id="sellAmount" class="form-control" step="0.01" required>
                         </div>
                         <div class="col-md-4">
                             <label>Rate</label>
-                            <input type="number" id="sellRate" class="form-control" required>
+                            <input type="number" id="sellRate" class="form-control" step="0.01" required>
                         </div>
                     </div>
                     <label>Remarks</label>
@@ -118,7 +132,7 @@
                 <h4>Take Profit</h4>
                 <form id="takeProfitForm">
                     <label>Amount</label>
-                    <input type="number" id="takeProfitAmount" class="form-control mb-2" required>
+                    <input type="number" id="takeProfitAmount" class="form-control mb-2" step="0.01" required>
                     <button type="submit" class="btn btn-warning btn-custom">Take Profit</button>
                 </form>
             </div>
@@ -139,7 +153,7 @@
                         </div>
                         <div class="col-md-6">
                             <label>Amount (MVR)</label>
-                            <input type="number" id="paymentAmount" class="form-control" required>
+                            <input type="number" id="paymentAmount" class="form-control" step="0.01" required>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-secondary btn-custom mt-2">Record Payment</button>
