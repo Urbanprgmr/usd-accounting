@@ -137,7 +137,10 @@ document.getElementById('takeProfitForm').addEventListener('submit', function (e
   e.preventDefault();
   const amount = parseFloat(document.getElementById('takeProfitAmount').value);
 
-  // Deduct the take profit amount from the gross profit
+  // Deduct the take profit amount from the balanceCapital
+  balanceCapital -= amount;
+
+  // Update the total taken profit
   totalTakenProfit += amount;
 
   // Add the take profit transaction to history
