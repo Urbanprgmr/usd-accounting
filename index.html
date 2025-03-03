@@ -24,6 +24,16 @@
         .btn-custom {
             width: 100%;
         }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .transaction-history {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .profit-box {
+            min-height: 120px;
+        }
     </style>
 </head>
 <body>
@@ -33,16 +43,16 @@
 
         <!-- Capital Overview -->
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-12">
                 <div class="card shadow">
                     <div class="card-body text-center">
                         <h5>Initial Capital (MVR)</h5>
                         <h3 id="initialCapital" class="text-dark">0.00</h3>
-                        <button class="btn btn-outline-primary btn-sm" onclick="editInitialCapital()">Edit Initial Capital</button>
+                        <button class="btn btn-outline-primary btn-sm btn-custom" onclick="editInitialCapital()">Edit Initial Capital</button>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-12">
                 <div class="card shadow">
                     <div class="card-body text-center">
                         <h5>Balance Capital (MVR)</h5>
@@ -54,24 +64,24 @@
 
         <!-- Profit Overview -->
         <div class="row">
-            <div class="col-md-4">
-                <div class="card shadow">
+            <div class="col-md-4 col-12">
+                <div class="card shadow profit-box">
                     <div class="card-body text-center">
-                        <h5>Total Profit Earned</h5>
+                        <h5>Total Profit</h5>
                         <h3 id="totalProfit" class="text-success">0.00</h3>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card shadow">
+            <div class="col-md-4 col-12">
+                <div class="card shadow profit-box">
                     <div class="card-body text-center">
                         <h5>Total Taken Profit</h5>
                         <h3 id="totalTakenProfit" class="text-danger">0.00</h3>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card shadow">
+            <div class="col-md-4 col-12">
+                <div class="card shadow profit-box">
                     <div class="card-body text-center">
                         <h5>Remaining Profit</h5>
                         <h3 id="remainingProfit" class="text-warning">0.00</h3>
@@ -80,89 +90,52 @@
             </div>
         </div>
 
-        <!-- Currency Balances -->
-        <div class="card shadow">
-            <div class="card-body">
-                <h4>Currency Balances</h4>
-                <p>Purchased USD: <span id="totalPurchasedUSD">0.00</span></p>
-                <p>Purchased EUR: <span id="totalPurchasedEUR">0.00</span></p>
-                <p>Purchased USDT: <span id="totalPurchasedUSDT">0.00</span></p>
-
-                <p>Sold USD: <span id="totalSoldUSD">0.00</span></p>
-                <p>Sold EUR: <span id="totalSoldEUR">0.00</span></p>
-                <p>Sold USDT: <span id="totalSoldUSDT">0.00</span></p>
-            </div>
-        </div>
-
-        <!-- Buy Currency Form -->
-        <div class="card shadow">
-            <div class="card-body">
-                <h4>Buy Currency</h4>
-                <form id="buyForm">
-                    <div class="row">
-                        <div class="col-md-4">
+        <!-- Buy & Sell Currency Forms -->
+        <div class="row">
+            <div class="col-md-6 col-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h4>Buy Currency</h4>
+                        <form id="buyForm">
                             <label>Currency</label>
                             <select id="buyCurrency" class="form-control">
                                 <option value="USD">USD</option>
                                 <option value="EUR">EUR</option>
                                 <option value="USDT">USDT</option>
                             </select>
-                        </div>
-                        <div class="col-md-4">
                             <label>Amount</label>
                             <input type="number" id="buyAmount" class="form-control" step="0.01" required>
-                        </div>
-                        <div class="col-md-4">
                             <label>Rate</label>
                             <input type="number" id="buyRate" class="form-control" step="0.01" required>
-                        </div>
+                            <label>Remarks</label>
+                            <input type="text" id="buyRemarks" class="form-control mb-2">
+                            <button type="submit" class="btn btn-primary btn-custom">Buy</button>
+                        </form>
                     </div>
-                    <label>Remarks</label>
-                    <input type="text" id="buyRemarks" class="form-control mb-2">
-                    <button type="submit" class="btn btn-primary btn-custom">Buy</button>
-                </form>
+                </div>
             </div>
-        </div>
 
-        <!-- Sell Currency Form -->
-        <div class="card shadow">
-            <div class="card-body">
-                <h4>Sell Currency</h4>
-                <form id="sellForm">
-                    <div class="row">
-                        <div class="col-md-4">
+            <div class="col-md-6 col-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h4>Sell Currency</h4>
+                        <form id="sellForm">
                             <label>Currency</label>
                             <select id="sellCurrency" class="form-control">
                                 <option value="USD">USD</option>
                                 <option value="EUR">EUR</option>
                                 <option value="USDT">USDT</option>
                             </select>
-                        </div>
-                        <div class="col-md-4">
                             <label>Amount</label>
                             <input type="number" id="sellAmount" class="form-control" step="0.01" required>
-                        </div>
-                        <div class="col-md-4">
                             <label>Rate</label>
                             <input type="number" id="sellRate" class="form-control" step="0.01" required>
-                        </div>
+                            <label>Remarks</label>
+                            <input type="text" id="sellRemarks" class="form-control mb-2">
+                            <button type="submit" class="btn btn-success btn-custom">Sell</button>
+                        </form>
                     </div>
-                    <label>Remarks</label>
-                    <input type="text" id="sellRemarks" class="form-control mb-2">
-                    <button type="submit" class="btn btn-success btn-custom">Sell</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Take Profit Form -->
-        <div class="card shadow">
-            <div class="card-body">
-                <h4>Take Profit</h4>
-                <form id="takeProfitForm">
-                    <label>Amount</label>
-                    <input type="number" id="takeProfitAmount" class="form-control mb-2" step="0.01" required>
-                    <button type="submit" class="btn btn-warning btn-custom">Take Profit</button>
-                </form>
+                </div>
             </div>
         </div>
 
@@ -170,23 +143,25 @@
         <div class="card shadow">
             <div class="card-body">
                 <h4>Transaction History</h4>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Currency</th>
-                            <th>Amount</th>
-                            <th>Rate</th>
-                            <th>Remarks</th>
-                            <th>Timestamp</th>
-                            <th>Profit</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="transactionHistory">
-                        <!-- Transactions will be inserted here -->
-                    </tbody>
-                </table>
+                <div class="table-responsive transaction-history">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Currency</th>
+                                <th>Amount</th>
+                                <th>Rate</th>
+                                <th>Remarks</th>
+                                <th>Timestamp</th>
+                                <th>Profit</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionHistory">
+                            <!-- Transactions will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
