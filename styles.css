@@ -10,8 +10,15 @@ body {
   margin: 0 auto;
 }
 
-.section {
+.card {
+  background-color: #2d2d44;
+  padding: 20px;
+  border-radius: 10px;
   margin-bottom: 20px;
+}
+
+h1, h2 {
+  color: #6c5ce7;
 }
 
 button {
@@ -21,10 +28,20 @@ button {
   padding: 10px 15px;
   cursor: pointer;
   margin: 5px;
+  border-radius: 5px;
 }
 
 button:hover {
   background-color: #5a4fcf;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 5px;
+  background-color: #333;
+  color: #fff;
+  margin: 5px;
 }
 
 table {
