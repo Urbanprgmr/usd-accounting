@@ -127,9 +127,8 @@ document.getElementById('takeProfitForm').addEventListener('submit', function (e
   e.preventDefault();
   const amount = parseFloat(document.getElementById('takeProfitAmount').value);
 
-  // Deduct the take profit amount from the total profit
+  // Deduct the take profit amount from the gross profit
   totalTakenProfit += amount;
-  balanceCapital -= amount;
 
   // Add the take profit transaction to history
   const timestamp = new Date().toLocaleString();
@@ -210,8 +209,10 @@ function updateUI() {
   document.getElementById('balanceUSDT').textContent = balanceUSDT.toFixed(2);
 
   // Update Profit Calculations
-  const currentProfit = totalSellRevenue - totalBuyCost - totalTakenProfit;
-  document.getElementById('currentProfit').textContent = currentProfit.toFixed(2);
+  const grossProfit = totalSellRevenue - totalBuyCost;
+  const netProfit = grossProfit - totalTakenProfit;
+  document.getElementById('grossProfit').textContent = grossProfit.toFixed(2);
+  document.getElementById('netProfit').textContent = netProfit.toFixed(2);
   document.getElementById('totalTakenProfit').textContent = totalTakenProfit.toFixed(2);
 
   // Update Transaction History
