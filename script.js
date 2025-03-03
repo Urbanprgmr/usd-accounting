@@ -52,10 +52,20 @@ document.getElementById('sellForm').addEventListener('submit', function (e) {
   const remarks = document.getElementById('sellRemarks').value;
   const timestamp = new Date().toLocaleString();
 
+  // Calculate the cost of the sold amount based on the average purchase cost
+  const avgPurchaseCost = totalBuyCost / (totalPurchased.USD + totalPurchased.EUR + totalPurchased.USDT) || 0;
+  const costOfSoldAmount = amount * avgPurchaseCost;
+
+  // Calculate the profit from this sell transaction
+  const profit = (amount * rate) - costOfSoldAmount;
+
   // Add amount to balanceCapital
   balanceCapital += amount * rate;
 
-  transactions.push({ type: 'Sell', currency, amount, rate, remarks, timestamp });
+  // Add the sell transaction to history
+  transactions.push({ type: 'Sell', currency, amount, rate, remarks, timestamp, profit });
+
+  // Update totals
   totalSold[currency] += amount;
   totalSellRevenue += amount * rate;
 
@@ -209,7 +219,9 @@ function updateUI() {
   document.getElementById('balanceUSDT').textContent = balanceUSDT.toFixed(2);
 
   // Update Profit Calculations
-  const grossProfit = totalSellRevenue - totalBuyCost;
+  const grossProfit = transactions
+    .filter(transaction => transaction.type === 'Sell')
+    .reduce((total, transaction) => total + (transaction.profit || 0), 0);
   const netProfit = grossProfit - totalTakenProfit;
   document.getElementById('grossProfit').textContent = grossProfit.toFixed(2);
   document.getElementById('netProfit').textContent = netProfit.toFixed(2);
