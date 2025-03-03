@@ -76,48 +76,6 @@ function updateUI() {
     : "<tr><td colspan='8' class='text-center'>No transactions yet</td></tr>";
 }
 
-// **Buy Currency**
-document.getElementById('buyForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-  const currency = document.getElementById('buyCurrency').value;
-  const amount = parseFloat(document.getElementById('buyAmount').value);
-  const rate = parseFloat(document.getElementById('buyRate').value);
-  const remarks = document.getElementById('buyRemarks').value;
-  const timestamp = new Date().toLocaleString();
-
-  balanceCapital -= amount * rate;
-  totalPurchased[currency] += amount;
-  totalBuyCost += amount * rate;
-
-  transactions.push({ type: 'Buy', currency, amount, rate, remarks, timestamp });
-
-  saveToLocalStorage();
-  updateUI();
-});
-
-// **Sell Currency**
-document.getElementById('sellForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-  const currency = document.getElementById('sellCurrency').value;
-  const amount = parseFloat(document.getElementById('sellAmount').value);
-  const rate = parseFloat(document.getElementById('sellRate').value);
-  const remarks = document.getElementById('sellRemarks').value;
-  const timestamp = new Date().toLocaleString();
-
-  const avgPurchaseCost = totalBuyCost / (totalPurchased.USD + totalPurchased.EUR + totalPurchased.USDT) || 0;
-  const costOfSoldAmount = amount * avgPurchaseCost;
-  const profit = (amount * rate) - costOfSoldAmount;
-
-  balanceCapital += amount * rate;
-  totalSold[currency] += amount;
-  totalSellRevenue += amount * rate;
-
-  transactions.push({ type: 'Sell', currency, amount, rate, remarks, timestamp, profit });
-
-  saveToLocalStorage();
-  updateUI();
-});
-
 // **Take Profit**
 document.getElementById('takeProfitForm').addEventListener('submit', function (e) {
   e.preventDefault();
@@ -143,3 +101,27 @@ function deleteTransaction(index) {
   saveToLocalStorage();
   updateUI();
 }
+
+// **Export to CSV**
+document.getElementById('exportCSV').addEventListener('click', () => {
+  const headers = ['Type', 'Currency', 'Amount', 'Rate (MVR)', 'Remarks', 'Timestamp'];
+  const rows = transactions.map(transaction => [
+    transaction.type,
+    transaction.currency,
+    transaction.amount.toFixed(2),
+    transaction.rate.toFixed(2),
+    transaction.remarks,
+    transaction.timestamp,
+  ]);
+
+  const csvContent = [
+    headers.join(','),
+    ...rows.map(row => row.join(','))
+  ].join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'transactions.csv';
+  link.click();
+});
