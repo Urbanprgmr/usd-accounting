@@ -3,7 +3,8 @@ if (!localStorage.getItem('currencyAppData')) {
   const initialData = {
     budget: 0,
     currencies: { USD: 0, USDT: 0, EUR: 0 },
-    transactions: []
+    transactions: [],
+    totalProfit: 0
   };
   localStorage.setItem('currencyAppData', JSON.stringify(initialData));
 }
@@ -22,6 +23,9 @@ function saveData(data) {
 function updateUI() {
   const data = getData();
   document.getElementById('budget').textContent = data.budget;
+  document.getElementById('usdBalance').textContent = data.currencies.USD;
+  document.getElementById('usdtBalance').textContent = data.currencies.USDT;
+  document.getElementById('eurBalance').textContent = data.currencies.EUR;
 
   const transactionTable = document.getElementById('transactionHistory').getElementsByTagName('tbody')[0];
   transactionTable.innerHTML = ''; // Clear existing rows
@@ -86,6 +90,7 @@ function sellCurrency() {
 
   data.budget += earnings;
   data.currencies[currency] -= amount;
+  data.totalProfit += (earnings - (amount * getExchangeRate(currency))); // Calculate profit
   data.transactions.push({
     id: Date.now(),
     type: 'sell',
@@ -93,6 +98,20 @@ function sellCurrency() {
     amount,
     timestamp: new Date().toISOString()
   });
+  saveData(data);
+  updateUI();
+}
+
+// Withdraw Profit
+function withdrawProfit() {
+  const amount = parseFloat(document.getElementById('withdrawAmount').value);
+  if (isNaN(amount)) return alert('Please enter a valid amount');
+
+  const data = getData();
+  if (amount > data.totalProfit) return alert('Cannot withdraw more than total profit');
+
+  data.budget -= amount;
+  data.totalProfit -= amount;
   saveData(data);
   updateUI();
 }
