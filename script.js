@@ -1,4 +1,4 @@
-// Initialize Data from LocalStorage
+// Initialize data
 let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 let totalPurchased = {
   USD: parseFloat(localStorage.getItem('totalPurchasedUSD')) || 0,
@@ -16,7 +16,7 @@ let totalPaymentIn = parseFloat(localStorage.getItem('totalPaymentIn')) || 0;
 let totalPaymentOut = parseFloat(localStorage.getItem('totalPaymentOut')) || 0;
 let initialCapital = parseFloat(localStorage.getItem('initialCapital')) || 0;
 let amountDeducted = parseFloat(localStorage.getItem('amountDeducted')) || 0;
-let balanceCapital = parseFloat(localStorage.getItem('balanceCapital')) || initialCapital;
+let balanceCapital = parseFloat(localStorage.getItem('balanceCapital')) || 0;
 let totalTakenProfit = parseFloat(localStorage.getItem('totalTakenProfit')) || 0;
 
 // Load saved data on page load
@@ -43,85 +43,198 @@ function saveToLocalStorage() {
   localStorage.setItem('totalTakenProfit', totalTakenProfit);
 }
 
-// Update UI
-function updateUI() {
-  document.getElementById('balanceCapital').textContent = balanceCapital.toFixed(2);
-  document.getElementById('totalProfit').textContent = (totalSellRevenue - totalBuyCost).toFixed(2);
-  document.getElementById('totalTakenProfit').textContent = totalTakenProfit.toFixed(2);
-  document.getElementById('remainingProfit').textContent = (totalSellRevenue - totalBuyCost - totalTakenProfit).toFixed(2);
-  document.getElementById('totalPaymentIn').textContent = totalPaymentIn.toFixed(2);
-  document.getElementById('totalPaymentOut').textContent = totalPaymentOut.toFixed(2);
-  document.getElementById('netPayment').textContent = (totalPaymentIn - totalPaymentOut).toFixed(2);
-  document.getElementById('initialCapital').textContent = initialCapital.toFixed(2);
-  document.getElementById('amountDeducted').textContent = amountDeducted.toFixed(2);
+// Reset LocalStorage and App Data
+function resetApp() {
+  if (confirm('Are you sure you want to reset all data? This action cannot be undone.')) {
+    // Clear localStorage
+    localStorage.clear();
 
-  // Update Transaction History Table
-  const tbody = document.getElementById('transactionHistory');
-  tbody.innerHTML = transactions.length > 0
-    ? transactions.map((transaction, index) => `
-      <tr>
-        <td>${transaction.type}</td>
-        <td>${transaction.currency}</td>
-        <td>${transaction.amount.toFixed(2)}</td>
-        <td>${transaction.rate.toFixed(2)}</td>
-        <td>${transaction.remarks}</td>
-        <td>${transaction.timestamp}</td>
-        <td>${transaction.profit ? transaction.profit.toFixed(2) : '-'}</td>
-        <td>
-          <button class="btn btn-warning btn-sm" onclick="editTransaction(${index})">Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteTransaction(${index})">Delete</button>
-        </td>
-      </tr>
-    `).join('')
-    : "<tr><td colspan='8' class='text-center'>No transactions yet</td></tr>";
+    // Reset all variables to initial state
+    transactions = [];
+    totalPurchased = { USD: 0, EUR: 0, USDT: 0 };
+    totalSold = { USD: 0, EUR: 0, USDT: 0 };
+    totalBuyCost = 0;
+    totalSellRevenue = 0;
+    totalPaymentIn = 0;
+    totalPaymentOut = 0;
+    initialCapital = 0;
+    amountDeducted = 0;
+    balanceCapital = 0;
+    totalTakenProfit = 0;
+
+    // Update UI
+    updateUI();
+  }
 }
 
-// **Take Profit**
-document.getElementById('takeProfitForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-  const amount = parseFloat(document.getElementById('takeProfitAmount').value);
+// Update UI
+function updateUI() {
+  // Update Balance Capital
+  document.getElementById('balanceCapital').textContent = balanceCapital.toFixed(2);
 
-  if (amount > totalSellRevenue - totalBuyCost - totalTakenProfit) {
-    alert("You cannot take more profit than available.");
+  // Update Transaction History
+  const tbody = document.querySelector('#transactionHistory tbody');
+  tbody.innerHTML = transactions.map((transaction, index) => `
+    <tr>
+      <td>${transaction.type}</td>
+      <td>${transaction.currency}</td>
+      <td>${transaction.amount.toFixed(2)}</td>
+      <td>${transaction.rate.toFixed(2)}</td>
+      <td>${transaction.remarks}</td>
+      <td>${transaction.timestamp}</td>
+      <td>
+        <button class="action-button edit-button" onclick="editTransaction(${index})">Edit</button>
+        <button class="action-button delete-button" onclick="deleteTransaction(${index})">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// Edit Transaction
+function editTransaction(index) {
+  const transaction = transactions[index];
+  const newAmount = parseFloat(prompt(`Enter new amount for ${transaction.type} (${transaction.currency}):`, transaction.amount));
+  const newRate = parseFloat(prompt(`Enter new rate for ${transaction.type} (${transaction.currency}):`, transaction.rate));
+  const newRemarks = prompt(`Enter new remarks for ${transaction.type}:`, transaction.remarks);
+
+  if (newAmount === null || newRate === null || isNaN(newAmount) || isNaN(newRate)) {
+    alert('Invalid input. Transaction not updated.');
     return;
   }
 
-  totalTakenProfit += amount;
-  balanceCapital -= amount;
+  // Revert the old transaction's impact on totals
+  if (transaction.type === 'Buy') {
+    totalPurchased[transaction.currency] -= transaction.amount;
+    totalBuyCost -= transaction.amount * transaction.rate;
+    balanceCapital += transaction.amount * transaction.rate; // Add back to capital
+  } else if (transaction.type === 'Sell') {
+    totalSold[transaction.currency] -= transaction.amount;
+    totalSellRevenue -= transaction.amount * transaction.rate;
+    balanceCapital -= transaction.amount * transaction.rate; // Deduct from capital
+  } else if (transaction.type === 'Take Profit') {
+    totalTakenProfit -= transaction.amount;
+    balanceCapital += transaction.amount; // Add back to capital
+  }
 
-  transactions.push({ type: 'Take Profit', currency: 'MVR', amount, rate: 1, timestamp: new Date().toLocaleString() });
+  // Update the transaction with new values
+  transaction.amount = newAmount;
+  transaction.rate = newRate;
+  transaction.remarks = newRemarks;
+
+  // Apply the new transaction's impact on totals
+  if (transaction.type === 'Buy') {
+    totalPurchased[transaction.currency] += newAmount;
+    totalBuyCost += newAmount * newRate;
+    balanceCapital -= newAmount * newRate; // Deduct from capital
+  } else if (transaction.type === 'Sell') {
+    totalSold[transaction.currency] += newAmount;
+    totalSellRevenue += newAmount * newRate;
+    balanceCapital += newAmount * newRate; // Add to capital
+  } else if (transaction.type === 'Take Profit') {
+    totalTakenProfit += newAmount;
+    balanceCapital -= newAmount; // Deduct from capital
+  }
+
+  // Save and update UI
+  saveToLocalStorage();
+  updateUI();
+}
+
+// Delete Transaction
+function deleteTransaction(index) {
+  const transaction = transactions[index];
+  if (confirm('Are you sure you want to delete this transaction?')) {
+    // Revert the transaction's impact on totals
+    if (transaction.type === 'Buy') {
+      totalPurchased[transaction.currency] -= transaction.amount;
+      totalBuyCost -= transaction.amount * transaction.rate;
+      balanceCapital += transaction.amount * transaction.rate; // Add back to capital
+    } else if (transaction.type === 'Sell') {
+      totalSold[transaction.currency] -= transaction.amount;
+      totalSellRevenue -= transaction.amount * transaction.rate;
+      balanceCapital -= transaction.amount * transaction.rate; // Deduct from capital
+    } else if (transaction.type === 'Take Profit') {
+      totalTakenProfit -= transaction.amount;
+      balanceCapital += transaction.amount; // Add back to capital
+    }
+
+    // Remove the transaction from the list
+    transactions.splice(index, 1);
+
+    // Save and update UI
+    saveToLocalStorage();
+    updateUI();
+  }
+}
+
+// Buy Form Submission
+document.getElementById('buyForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const currency = document.getElementById('buyCurrency').value;
+  const amount = parseFloat(document.getElementById('buyAmount').value);
+  const rate = parseFloat(document.getElementById('buyRate').value);
+  const remarks = document.getElementById('buyRemarks').value;
+  const timestamp = new Date().toLocaleString();
+
+  // Deduct amount from balanceCapital
+  balanceCapital -= amount * rate;
+
+  transactions.push({ type: 'Buy', currency, amount, rate, remarks, timestamp });
+  totalPurchased[currency] += amount;
+  totalBuyCost += amount * rate;
 
   saveToLocalStorage();
   updateUI();
 });
 
-// **Delete Transaction**
-function deleteTransaction(index) {
-  transactions.splice(index, 1);
+// Sell Form Submission
+document.getElementById('sellForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const currency = document.getElementById('sellCurrency').value;
+  const amount = parseFloat(document.getElementById('sellAmount').value);
+  const rate = parseFloat(document.getElementById('sellRate').value);
+  const remarks = document.getElementById('sellRemarks').value;
+  const timestamp = new Date().toLocaleString();
+
+  // Calculate the cost of the sold amount based on the average purchase cost
+  const avgPurchaseCost = totalBuyCost / (totalPurchased.USD + totalPurchased.EUR + totalPurchased.USDT) || 0;
+  const costOfSoldAmount = amount * avgPurchaseCost;
+
+  // Calculate the profit from this sell transaction
+  const profit = (amount * rate) - costOfSoldAmount;
+
+  // Add amount to balanceCapital
+  balanceCapital += amount * rate;
+
+  // Add the sell transaction to history
+  transactions.push({ type: 'Sell', currency, amount, rate, remarks, timestamp, profit });
+
+  // Update totals
+  totalSold[currency] += amount;
+  totalSellRevenue += amount * rate;
+
   saveToLocalStorage();
   updateUI();
-}
+});
 
-// **Export to CSV**
-document.getElementById('exportCSV').addEventListener('click', () => {
-  const headers = ['Type', 'Currency', 'Amount', 'Rate (MVR)', 'Remarks', 'Timestamp'];
-  const rows = transactions.map(transaction => [
-    transaction.type,
-    transaction.currency,
-    transaction.amount.toFixed(2),
-    transaction.rate.toFixed(2),
-    transaction.remarks,
-    transaction.timestamp,
-  ]);
+// Take Profit Form Submission
+document.getElementById('takeProfitForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const amount = parseFloat(document.getElementById('takeProfitAmount').value);
 
-  const csvContent = [
-    headers.join(','),
-    ...rows.map(row => row.join(','))
-  ].join('\n');
+  // Deduct the take profit amount from the gross profit
+  totalTakenProfit += amount;
 
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = 'transactions.csv';
-  link.click();
+  // Add the take profit transaction to history
+  const timestamp = new Date().toLocaleString();
+  transactions.push({ type: 'Take Profit', currency: 'MVR', amount, rate: 1, remarks: 'Profit Taken', timestamp });
+
+  saveToLocalStorage();
+  updateUI();
+});
+
+// Reset Button
+document.getElementById('resetButton').addEventListener('click', function (e) {
+  e.preventDefault();
+  resetApp();
 });
