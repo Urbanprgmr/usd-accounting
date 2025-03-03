@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Capital Management System</title>
-    
-    <!-- Bootstrap 5 CDN for modern UI -->
+    <title>Capital & Payments Management</title>
+
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Custom Styles -->
     <style>
         body {
             background-color: #f8f9fa;
         }
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: auto;
             padding: 20px;
         }
@@ -30,7 +29,7 @@
 <body>
 
     <div class="container">
-        <h2 class="text-center mt-4 mb-4">Capital Management System</h2>
+        <h2 class="text-center mt-4 mb-4">Capital & Payments Management</h2>
 
         <!-- Capital & Profit Overview -->
         <div class="row">
@@ -39,6 +38,7 @@
                     <div class="card-body text-center">
                         <h5>Balance Capital (MVR)</h5>
                         <h3 id="balanceCapital" class="text-primary">0.00</h3>
+                        <button class="btn btn-outline-primary btn-sm" onclick="editCapital()">Edit Capital</button>
                     </div>
                 </div>
             </div>
@@ -124,6 +124,30 @@
             </div>
         </div>
 
+        <!-- Payments Section -->
+        <div class="card shadow">
+            <div class="card-body">
+                <h4>Manage Payments</h4>
+                <form id="paymentForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Payment Type</label>
+                            <select id="paymentType" class="form-control">
+                                <option value="in">Received Payment</option>
+                                <option value="out">Made Payment</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Amount (MVR)</label>
+                            <input type="number" id="paymentAmount" class="form-control" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-secondary btn-custom mt-2">Record Payment</button>
+                </form>
+                <h5 class="mt-3">Balance Payments: <span id="balancePayments" class="text-primary">0.00</span> MVR</h5>
+            </div>
+        </div>
+
         <!-- Transaction History -->
         <div class="card shadow">
             <div class="card-body">
@@ -138,7 +162,7 @@
                             <th>Remarks</th>
                             <th>Timestamp</th>
                             <th>Profit</th>
-                            <th>Action</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="transactionHistory">
